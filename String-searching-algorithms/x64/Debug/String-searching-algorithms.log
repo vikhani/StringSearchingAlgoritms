@@ -1,0 +1,46 @@
+﻿  pch.cpp
+  Boyer-Moore-Horspool+Raita.cpp
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\boyer-moore-horspool+raita.cpp(14): warning C4311: 'type cast': pointer truncation from 'const char *' to 'unsigned int'
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\boyer-moore-horspool+raita.cpp(14): warning C4302: 'type cast': truncation from 'const char *' to 'unsigned int'
+  Boyer-Moore-Horspool.cpp
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\boyer-moore-horspool.cpp(14): warning C4311: 'type cast': pointer truncation from 'const char *' to 'unsigned int'
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\boyer-moore-horspool.cpp(14): warning C4302: 'type cast': truncation from 'const char *' to 'unsigned int'
+  Boyer-Moore.cpp
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\boyer-moore.cpp(29): warning C4311: 'type cast': pointer truncation from 'const char *' to 'unsigned int'
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\boyer-moore.cpp(29): warning C4302: 'type cast': truncation from 'const char *' to 'unsigned int'
+  Knuth-Morris-Pratt.cpp
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\knuth-morris-pratt.cpp(14): warning C4311: 'type cast': pointer truncation from 'const char *' to 'unsigned int'
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\knuth-morris-pratt.cpp(14): warning C4302: 'type cast': truncation from 'const char *' to 'unsigned int'
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\knuth-morris-pratt.cpp(17): warning C4018: '<': signed/unsigned mismatch
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\knuth-morris-pratt.cpp(20): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  Naive.cpp
+  Rabin-Karp.cpp
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\rabin-karp.cpp(10): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\rabin-karp.cpp(64): warning C4244: '=': conversion from 'double' to '_Ty', possible loss of data
+          with
+          [
+              _Ty=size_t
+          ]
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\rabin-karp.cpp(76): warning C4244: '=': conversion from 'double' to '_Ty', possible loss of data
+          with
+          [
+              _Ty=size_t
+          ]
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\rabin-karp.cpp(90): warning C4244: '=': conversion from 'double' to '_Ty', possible loss of data
+          with
+          [
+              _Ty=size_t
+          ]
+  SearchUtils.cpp
+  String-searching-algorithms.cpp
+  Tables.cpp
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\tables.cpp(12): warning C4018: '<': signed/unsigned mismatch
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\tables.cpp(14): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\tables.cpp(31): warning C4267: '=': conversion from 'size_t' to '_Ty', possible loss of data
+          with
+          [
+              _Ty=long
+          ]
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\tables.cpp(57): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Generating Code...
+  String-searching-algorithms.vcxproj -> C:\Users\Vkhanieva\source\repos\String-searching-algorithms\x64\Debug\String-searching-algorithms.exe

@@ -1,0 +1,17 @@
+	sprintf(text1,"0x%x",psxRegs.pc);
+	fprintf(fp,"PC Register : ");
+	fprintf(fp,text1);
+	fprintf(fp,"\n");
+	sprintf(text1,"%x",psxRegs.GPR.r[32]);
+	fprintf(fp,"GPR Register HI: ");
+	fprintf(fp,text1);
+	fprintf(fp,"\n");
+	sprintf(text1,"%x",psxRegs.GPR.r[33]);
+	fprintf(fp,"GPR Register LO: ");
+	fprintf(fp,text1);
+	fprintf(fp,"\n");
+ ztestvoid ThisIsATestForSearch()
+{
+  printf("Hello");
+}
+z}

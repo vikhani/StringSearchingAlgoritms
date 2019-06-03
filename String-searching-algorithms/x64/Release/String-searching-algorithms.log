@@ -1,0 +1,8 @@
+﻿  String-searching-algorithms.cpp
+c:\users\vkhanieva\source\repos\string-searching-algorithms\string-searching-algorithms\string-searching-algorithms.cpp(80): warning C4244: '=': conversion from 'double' to '_Ty', possible loss of data
+          with
+          [
+              _Ty=size_t
+          ]
+  LINK : /LTCG specified but no code generation required; remove /LTCG from the link command line to improve linker performance
+  String-searching-algorithms.vcxproj -> C:\Users\Vkhanieva\source\repos\String-searching-algorithms\x64\Release\String-searching-algorithms.exe
