@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <experimental/filesystem>
 #include <sstream>
+#include <string_view>
 
 using namespace std;
 
@@ -19,6 +20,20 @@ typedef vector<long> skiptable_type;
 typedef vector<long> occtable_type;
 typedef vector<size_t> z_function;
 typedef vector<size_t> prefix_function;
+
+const int k = 128, NMAX = 10000;
+struct bohrVertex {
+  int nextVertex[k];
+  int needleNum;
+  int suffLink;
+  int suffGoodLink;
+  int auto_move[k];
+  int parent;
+  bool flag;
+  char symb;
+};
+
+void CheckAhoCorWork();
 
 size_t KnuthMorrisPratt(const char* haystack,
                         const size_t haystack_length,
@@ -56,6 +71,19 @@ size_t NaiveSearch(const string haystack,
                    const string needle,
                    const size_t needle_length);
 
+inline size_t FastPower(size_t t, size_t k) // возведение t в степень k
+{
+  size_t res = 1;
+  while (k)
+  {
+    if (k & 1)
+      res *= t;
+    t *= t;
+    k >>= 1;
+  }
+  return res;
+}
+
 size_t RabinKarpwithBernstein(const string haystack,
                               const size_t haystack_length,
                               const string needle,
@@ -69,6 +97,6 @@ size_t RabinKarpwithRolling(const string &haystack,
 
 size_t Bernstein_hash(const string str, const size_t len, size_t pos);
 
-bool Check(const string &s1, const string &s2, const size_t len);
+bool Check(string_view s1, string_view s2, const size_t len);
 
 void SortingStrings(vector<string> &strings);
