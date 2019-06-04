@@ -7,12 +7,12 @@ size_t Bernstein_hash(const string str, const size_t len, size_t pos)
   size_t hash = 5381;
 
   for (size_t i = pos; i < len; ++i)
-    hash = hash * pow(33, str[i]);
+    hash = hash * FastPower(33, str[i]);
 
   return hash;
 }
 
-bool Check(const string &s1, const string &s2, const size_t len)
+bool Check(string_view s1, string_view s2, const size_t len)
 {
   for (size_t i = 0; i < len; ++i)
   {
@@ -53,18 +53,18 @@ size_t RabinKarpwithRolling(const string &haystack,
 {
  // const int prime = 3;
   size_t needles_num = needles.size();
-  vector<size_t> currentHayHash;
+  vector<size_t> currentHayHash(needles.size(), 0);
 
-  for (size_t i = 0; i < needles.size(); i++)
-  {
-    currentHayHash.push_back(0);
-  }
+  //for (size_t i = 0; i < needles.size(); i++)
+  //{
+  //  currentHayHash.push_back(0);
+  //}
 
   for (size_t i = 0; i < needles_num; ++i)
   {
     for (size_t j = 0; j < needle_length[i]; j++)
     {
-      currentHayHash[i] = currentHayHash[i] + (haystack[j]) * pow(PRIME, (needle_length[i] - j - 1));
+      currentHayHash[i] = currentHayHash[i] + (haystack[j]) * FastPower(PRIME, (needle_length[i] - j - 1));
     }
   }
 
@@ -80,11 +80,11 @@ size_t RabinKarpwithRolling(const string &haystack,
   {
     for (size_t j = 1; j + needle_length[i] + 1 < haystack_length; ++j)
     {
-      currentHayHash[i] = currentHayHash[i] - haystack[j - 1] * pow(PRIME, (needle_length[i] - 1));
+      currentHayHash[i] = currentHayHash[i] - haystack[j - 1] * FastPower(PRIME, (needle_length[i] - 1));
       currentHayHash[i] = currentHayHash[i] * PRIME + haystack[j + needle_length[i] - 1];
     //  currentHayHash[i] = currentHayHash[i] + haystack[j + needle_length[i] - 1];
 
-      if (currentHayHash[i] == needle_hash[i] && Check(needles[i], haystack.substr(j, needle_length[i]), needle_length[i]))
+      if (currentHayHash[i] == needle_hash[i] && Check(needles[i], string_view{ haystack }.substr(j, needle_length[i]), needle_length[i]))
       {
         return j;
       }
