@@ -21,10 +21,10 @@ typedef vector<long> occtable_type;
 typedef vector<size_t> z_function;
 typedef vector<size_t> prefix_function;
 
-const int k = 128, NMAX = 10000;
+const int k = 128, NMAX = 1000000;
 struct bohrVertex {
   int nextVertex[k];
-  int needleNum;
+  int needleNumber;
   int suffLink;
   int suffGoodLink;
   int auto_move[k];
@@ -89,14 +89,13 @@ size_t RabinKarpwithBernstein(const string haystack,
                               const string needle,
                               const size_t needle_length);
 
-size_t RabinKarpwithRolling(const string &haystack,
-                            const size_t haystack_length,
-                            const vector<string> &needles,
-                            const vector<size_t> needle_hash,
-                            const vector<size_t> needle_length);
+vector<size_t> RabinKarpwithRolling(string_view haystack,
+                                    const vector<string> &needles,
+                                    const vector<size_t> &needle_hash);
 
 size_t Bernstein_hash(const string str, const size_t len, size_t pos);
 
-bool Check(string_view s1, string_view s2, const size_t len);
-
 void SortingStrings(vector<string> &strings);
+
+vector<size_t> CheckAhoCorWork(const vector<string> &s, const string &h);
+
