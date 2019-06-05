@@ -3,8 +3,9 @@
 
 #include "pch.h"
 #include "SearchingAlgorithms.h"
+#include <functional>
 
-#define CYCLES_NUMBER 15;
+#define CYCLES_NUMBER 1;
 
 int main()
 {
@@ -12,7 +13,7 @@ int main()
 
   cout << "Loading file\n";
 
-  string filename = "example.txt";
+  string filename = "bible.txt";
   ifstream infile(filename);
   //string line;
   string haystack = /*static_cast<std::stringstream const&>*/(std::stringstream() << infile.rdbuf()).str();
@@ -31,22 +32,39 @@ int main()
   cout << "\nFile loaded\n";
 
   vector<string> needles = { "void ThisIsATestForSearch()",
-                             "MoonKnight",
-                             "Phoenix",
-                             "Desert",
-                             "Renegate",
+                             "MoonKnighttt",
+                             "Phoenixxx",
+                             "Deserttt",
+                             "Renegateee",
                              "if (IsErrorActive(1011) && !isOK)",
-                             " ApplyRuleG_1011_RawFunCall(*this, result, pSrcPtree);",
+                             "ApplyRuleG_1011_RawFunCall(*this, result, pSrcPtree);",
                              "if (IsErrorActive(1023))",
                              "ApplyRuleG_1023(*this, result);",
                              "ApplyRuleG_1025(*this, result);",
                              "if (IsErrorActive(1025))",
-                             "Unicorns",
+                             "Unicornsss",
                              "void ChangeLanguage(char *langgg)",
                              "strcpy_s(Config.Lannnggg, lang);",
                              "SaveConfiiigg",
                              "void ThisIsATestForTheSearch()"};
   SortingStrings(needles);
+  //vector<string> needlesForAhoCor = { "aklaffs akfab)",
+  //                                    "bklaffsakfba",
+  //                                    "cklaffsakfdccc",
+  //                                    "aklaffsakfaabcd",
+  //                                    "aklaffsakfaabcbca",
+  //                                    "aklaffsakfabcda",
+  //                                    "aklaffsakfaanabaf",
+  //                                    "aklaffsakfababscv",
+  //                                    "aklaffsakfabsdaaa",
+  //                                    "vklaffsakfvcababaa",
+  //                                    "aklaffsakfsdasdaaa",
+  //                                    "aklaffsakfsadasdasdaaa" };
+
+  clock_t start, end; // часы
+
+
+
 
   size_t haystack_len = haystack.length();
   vector<size_t> needles_length;
@@ -77,23 +95,30 @@ int main()
   {
     for (size_t j = 0; j < needles_length[i]; j++)
     {
-      needle_hash[i] = needle_hash[i] + (needles[i][j]) * pow(PRIME, (needles_length[i] - j - 1));
+      needle_hash[i] = needle_hash[i] + (needles[i][j]) * FastPower(PRIME, (needles_length[i] - j - 1));
     }
   }
 
-
   const size_t cycles_max = CYCLES_NUMBER; // количесвто циклов прогонки "тестового" поиска
-  clock_t start, end; // часы
 
-  vector<size_t> result_placeNaive,
+  vector<size_t> //result_placeNaive,
                //result_placeRK,
                  result_placeBM,
                  result_placeBMH,
                  result_placeBMHR,
                  result_placeKMP,
                  result_placeCPP,
-                 result_placeRKR;
+                 result_placeRKR,
+                 result_placeAhoCor;
   //result_placeNaive.reserve(cycles_max);
+
+  start = clock();
+    result_placeAhoCor = CheckAhoCorWork(needles, haystack);
+  end = clock();
+  long double secondsAhoCor = (long double)(end - start) / CLOCKS_PER_SEC;
+  cout << "AhoCor done\n";
+
+  cout << "Среднее время работы: " << secondsAhoCor << '\n';
 
   start = clock();
   for (size_t i = 0; i < cycles_max; i++)
@@ -114,17 +139,23 @@ int main()
   end = clock();
   long double secondsCPP = (long double)(end - start) / CLOCKS_PER_SEC / cycles_max;
   cout << "CPP done\n";
-  start = clock();
 
-  for (size_t i = 0; i < cycles_max; i++)
+  cout << "Результат встроенной функции СРР:\n";
+  for (size_t i = 0; i < needles.size(); ++i)
   {
-    for (size_t j = 0; j < needles.size(); j++)
-      result_placeNaive.push_back(NaiveSearch(haystack.data(), haystack_len, needles[j].data(), needles_length[j]));
-    cout << "Naive /";
+    cout << result_placeCPP[i] << '\n';
   }
-  end = clock();
-  long double secondsNaive = (long double)(end - start) / CLOCKS_PER_SEC / cycles_max;
-  cout << "Naive done\n";
+  cout << "Среднее время работы: " << secondsCPP << "\n\n";
+  //start = clock();
+  //for (size_t i = 0; i < cycles_max; i++)
+  //{
+  //  for (size_t j = 0; j < needles.size(); j++)
+  //    result_placeNaive.push_back(NaiveSearch(haystack.data(), haystack_len, needles[j].data(), needles_length[j]));
+  //  cout << "Naive /";
+  //}
+  //end = clock();
+  //long double secondsNaive = (long double)(end - start) / CLOCKS_PER_SEC / cycles_max;
+  //cout << "Naive done\n";
 
   //start = clock();
   //for (size_t i = 0; i < cycles_max; i++)
@@ -137,9 +168,19 @@ int main()
   //cout << "RK done\n";
 
   start = clock();
+  for (string_view needle : needles)
+  {
+    std::search(haystack.begin(), haystack.end(), boyer_moore_horspool_searcher(needle.begin(), needle.end()));
+  }
+  end = clock();
+
+  long double secondsCPP17 = (long double)(end - start) / CLOCKS_PER_SEC / cycles_max;
+  cout << "CPP17: " << secondsCPP17;
+  start = clock();
+
   for (size_t i = 0; i < cycles_max; i++)
   {
-    result_placeRKR.push_back(RabinKarpwithRolling(haystack.data(), haystack_len, needles, needle_hash, needles_length));
+    result_placeRKR = RabinKarpwithRolling(haystack, needles, needle_hash);
     cout << "RKR /";
   }
   end = clock();
@@ -197,24 +238,19 @@ int main()
 
 
 
-  cout << "Результат наивного алгоритма:\n";
-  for (size_t i = 0; i < needles.size(); ++i)
-  {
-    cout  << result_placeNaive[i]  << '\n';
-  }
-  cout << "Среднее время работы: " << secondsNaive << "\n\n";
+  //cout << "Результат наивного алгоритма:\n";
+  //for (size_t i = 0; i < needles.size(); ++i)
+  //{
+  //  cout  << result_placeNaive[i]  << '\n';
+  //}
+  //cout << "Среднее время работы: " << secondsNaive << "\n\n";
 
-  cout << "Результат встроенной функции СРР:\n";
-  for (size_t i = 0; i < needles.size(); ++i)
-  {
-    cout << result_placeCPP[i]  << '\n';
-  }
-  cout << "Среднее время работы: " << secondsCPP << "\n\n";
+
 
   cout << "Результат алгоритма Бойера-Мура:                               " << result_placeBM[0]     << ". Среднее время работы: "  << secondsBM << '\n';
  // cout << "Результат алгоритма Рабина-Карпа:                              " << result_placeRK      << ". Среднее время работы: " << secondsRK << '\n';
   cout << "Результат алгоритма Рабина-Карпа c rolling хэшем:              " << result_placeRKR[0]    << ". Среднее время работы: " << secondsRKR << '\n';
-                                                                         
+  cout << "Результат алгоритма Ахо-Корасик:                               " << result_placeAhoCor[0] << ". Среднее время работы: " << secondsAhoCor << '\n';
   cout << "Результат алгоритма Бойера-Мура-Хорспула:                      " << result_placeBMH[0]    << ". Среднее время работы: " << secondsBMH << '\n';
   cout << "Результат алгоритма Бойера-Мура-Хорспула c оптимизацией Раита: " << result_placeBMHR[0]   << ". Среднее время работы: " << secondsBMHR << '\n';
   cout << "Результат алгоритма Кнута-Морриса-Пратта:                      " << result_placeKMP[0]    << ". Среднее время работы: " << secondsKMP << '\n';
@@ -231,7 +267,7 @@ int main()
     cout << "\n";
     for (size_t j = 0; j < needles_length[i]; j++)
     {
-      cout << haystack[result_placeNaive[i] + j];
+      cout << haystack[result_placeRKR[i] + j];
     }
   }
   cout << "\n";
