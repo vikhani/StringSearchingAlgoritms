@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "SearchingAlgorithms.h"
+#include <numeric>
 
 
 size_t Bernstein_hash(const string str, const size_t len, size_t pos)
@@ -10,18 +11,6 @@ size_t Bernstein_hash(const string str, const size_t len, size_t pos)
     hash = hash * FastPower(33, str[i]);
 
   return hash;
-}
-
-bool Check(string_view s1, string_view s2, const size_t len)
-{
-  for (size_t i = 0; i < len; ++i)
-  {
-    if (s1[i] != s2[i])
-    {
-      return false;
-    }
-  }
-  return true;
 }
 
 size_t RabinKarpwithBernstein(const string haystack,
@@ -36,7 +25,7 @@ size_t RabinKarpwithBernstein(const string haystack,
     size_t pos = i;
     size_t currentHayHash = Bernstein_hash(haystack, needle_length+pos , pos);
 
-    if (currentHayHash == needle_hash && Check(needle, haystack.substr(pos, needle_length), needle_length))
+    if (currentHayHash == needle_hash && needle == string_view { haystack }.substr(pos, needle_length))
     {
       return pos;
     }
@@ -45,52 +34,63 @@ size_t RabinKarpwithBernstein(const string haystack,
   return -1;
 }
 
-size_t RabinKarpwithRolling(const string &haystack,
-                            const size_t haystack_length,
-                            const vector<string> &needles,
-                            const vector<size_t> needle_hash,
-                            const vector<size_t> needle_length)
+bool Check(string_view s1, string_view s2, const size_t len)
 {
- // const int prime = 3;
-  size_t needles_num = needles.size();
-  vector<size_t> currentHayHash(needles.size(), 0);
-
-  //for (size_t i = 0; i < needles.size(); i++)
-  //{
-  //  currentHayHash.push_back(0);
-  //}
-
-  for (size_t i = 0; i < needles_num; ++i)
+  for (size_t i = 0; i < len; ++i)
   {
-    for (size_t j = 0; j < needle_length[i]; j++)
+    if (s1[i] != s2[i])
     {
-      currentHayHash[i] = currentHayHash[i] + (haystack[j]) * FastPower(PRIME, (needle_length[i] - j - 1));
+      return false;
     }
   }
+  return true;
+}
 
-  for (size_t i = 0; i < needles_num; i++)
+vector<size_t> RabinKarpwithRolling(string_view haystack,
+                                    const vector<string> &needles,
+                                    const vector<size_t> &needle_hash)
+{
+  vector<size_t> currentHayHash;
+  currentHayHash.reserve(needles.size());
+  
+  std::transform(needles.begin(), needles.end(), back_inserter(currentHayHash),
+                 [haystack](string_view needle)
+                 {
+                   if (haystack.size() < needle.size())
+                     return size_t {};
+
+                   size_t j = 0;
+                   return std::accumulate(haystack.begin(), haystack.begin() + needle.size(), size_t {},
+                                          [&j, needle](auto acc, size_t elem)
+                                          {
+                                            return acc + elem * FastPower(PRIME, needle.size() - j++ - 1);;
+                                          });
+                 });
+
+  vector<size_t> result;
+
+  for (size_t i = 0; i < needles.size(); ++i)
   {
     if (needle_hash[i] == currentHayHash[i])
     {
-      return 0;
+      result.push_back(0);
     }
   }
 
-  for (size_t i = 0; i < needles_num; ++i)
+  for (size_t i = 0; i < needles.size(); ++i)
   {
-    for (size_t j = 1; j + needle_length[i] + 1 < haystack_length; ++j)
+    string_view needle = needles[i];
+    for (size_t j = 1; j + needle.size() <= haystack.size(); ++j)
     {
-      currentHayHash[i] = currentHayHash[i] - haystack[j - 1] * FastPower(PRIME, (needle_length[i] - 1));
-      currentHayHash[i] = currentHayHash[i] * PRIME + haystack[j + needle_length[i] - 1];
-    //  currentHayHash[i] = currentHayHash[i] + haystack[j + needle_length[i] - 1];
+      currentHayHash[i] -= haystack[j - 1] * FastPower(PRIME, needle.size() - 1);
+      currentHayHash[i] = currentHayHash[i] * PRIME + haystack[j + needle.size() - 1];
 
-      if (currentHayHash[i] == needle_hash[i] && Check(needles[i], string_view{ haystack }.substr(j, needle_length[i]), needle_length[i]))
+      if (currentHayHash[i] == needle_hash[i] && haystack.substr(j, std::min(needle.size(), haystack.size() - j)) == needle)
       {
-        return j;
+        result.push_back(j);
       }
     }
   }
 
-    return -1;
-  }
-
+  return result;
+ }

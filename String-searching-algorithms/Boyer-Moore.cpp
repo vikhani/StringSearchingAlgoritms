@@ -38,7 +38,8 @@ size_t BoyerMoore(const char* haystack,
                                                  needle_length, 
                                                  needle_length, 
                                                  0);
-    if (match_len == needle_length && Check(needle, haystack+haystack_position, needle_length)) return haystack_position;
+    if (match_len == needle_length && needle == string_view { haystack }.substr(haystack_position, needle_length))
+      return haystack_position;
 
     const size_t mismatch_position = needle_length_minus_1 - match_len;
 
