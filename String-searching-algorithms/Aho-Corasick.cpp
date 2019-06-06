@@ -95,14 +95,15 @@ int GetAutoMoving(int vertexIndex, char ch)
     }
     else
     {
-      if (vertexIndex == 0)
-      {
-        bohr[vertexIndex].auto_move[ch] = 0;
-      }
-      else
-      {
-        bohr[vertexIndex].auto_move[ch] = GetAutoMoving(GettingSuffLink(vertexIndex), ch);
-      }
+      bohr[vertexIndex].auto_move[ch] = vertexIndex == 0 ? 0 : GetAutoMoving(GettingSuffLink(vertexIndex), ch);
+      //if (vertexIndex == 0)
+      //{
+      //  bohr[vertexIndex].auto_move[ch] = 0;
+      //}
+      //else
+      //{
+      //  bohr[vertexIndex].auto_move[ch] = GetAutoMoving(GettingSuffLink(vertexIndex), ch);
+      //}
     }
   }
   return bohr[vertexIndex].auto_move[ch];
@@ -125,25 +126,33 @@ int GettingGoodSuffLink(int vertex)
   return bohr[vertex].suffGoodLink;
 }
 
-void Check(int vertex, int positionEnd, vector<size_t> &result)
-{
-  for (int u = vertex; u != 0; u = GettingGoodSuffLink(u))
-  {
-    if (bohr[u].flag)
-    {
-      //cout << i - needle[bohr[u].needleSize].length() << " " << needle[bohr[u].needleSize] << endl;
-      result.push_back( positionEnd - needlesInBohr[bohr[u].needleNumber].length() );
-    }
-  }
-}
+//void Check(int vertex, int positionEnd, vector<size_t> &result)
+//{
+//  for (int u = vertex; u != 0; u = GettingGoodSuffLink(u))
+//  {
+//    if (bohr[u].flag)
+//    {
+//      //cout << i - needle[bohr[u].needleSize].length() << " " << needle[bohr[u].needleSize] << endl;
+//      result.push_back( positionEnd - needlesInBohr[bohr[u].needleNumber].length() );
+//    }
+//  }
+//}
 
 void FindAllPositions(const string& haystack, vector<size_t> &result)
 {
-  int vertex = 0;
-  for (int i = 0; i < haystack.length(); i++)
+  size_t vertex = 0;
+  for (size_t i = 0; i < haystack.length(); i++)
   {
     vertex = GetAutoMoving(vertex, haystack[i]);
-    Check(vertex, i + 1, result);
+    //Check(vertex, i + 1, result);
+    for (size_t u = vertex; u != 0; u = GettingGoodSuffLink(u))
+    {
+      if (bohr[u].flag)
+      {
+       // cout << i - needle[bohr[u].needleSize].length() << " " << needle[bohr[u].needleSize] << endl;
+        result.push_back(i + 1 - needlesInBohr[bohr[u].needleNumber].length());
+      }
+    }
   }
 }
 
