@@ -1,0 +1,171 @@
+CVE##########
+void ThisIsATestForSearch()
+CVE##########
+MoonKnighttt
+CVE##########
+Phoenixxx
+CVE##########
+De
+serttt
+CVE##########
+Renegateee
+CVE##########
+if (IsErrorAc
+tive(1011) && !isOK)
+CVE##########
+ApplyRuleG_1011_RawFunCa
+ll(*this, result, pSrcPtree);
+CVE##########
+if (IsErrorActive(1
+023))
+CVE##########
+ApplyRuleG_1023(*this, result);
+CVE##########
+ApplyRuleG_1025(*this, result);
+CVE##########
+if (IsErrorActive(1025))
+CVE##########
+Unicornsss
+CVE##########
+void ChangeLanguage(char *langgg)
+CVE##########
+strcpy_s(Config.Lannnggg, lang)
+CVE##########
+SaveConfiiigg
+CVE##########
+void ThisIsATestForTheSearch()
+CVE##########
+string teststring = "aaa";
+teststring.size();
+CVE##########
+	for (bit = 0; bit < nBits; ++bit)
+	{
+		/*
+		 * If the LSB bit is set, set the reflection of it.
+		 */
+		if (data & 0x01)
+		{
+CVE##########
+			reflection |= (1 << ((nBits - 1) - bit));
+		}
+
+		data = (data >> 1);
+	}
+
+	return (reflection);
+
+CVE##########
+  unsigned long crcSlow(unsigned char const message[], int nBytes)
+{
+    unsigned long  remainder = INITIAL_REMAINDER;
+CVE##########
+            if (remainder & TOPBIT)
+            {
+                remainder = (remainder << 1) ^ POLYNOMIAL;
+            }
+            else
+
+            void statsVSync() {
+CVE##########
+
+	//static u64 accum = 0, accumvu1 = 0;
+	//static u32 frame = 0;
+CVE##########
+
+	stats.eeCycles+= cpuRegs.cycle - stats.eeSCycle;
+	stats.eeSCycle = cpuRegs.cycle;
+	stats.iopCycles+= psxRegs.cycle - stats.iopSCycle;
+	stats.iopSCycle = psxRegs.cycle;
+	stats.vsyncCount++;
+	stats.vif1count = 0;
+	stats.vu1count = 0;
+CVE##########
+  		for ( i = strlen( p ) + 1 + 256, argc = 0; i > 0; i-- )
+      {
+			while ( i && ( ( PS2MEM_BASE[ args_ptr + i ] == 0 ) || ( PS2MEM_BASE[ args_ptr + i ] == 32 ) ) )
+         {
+            i--;
+         }
+			if ( PS2MEM_BASE[ args_ptr + i + 1 ] == ' ' )
+         {
+            PS2MEM_BASE[ args_ptr + i + 1 ] = 0;
+         }
+			while ( i && ( PS2MEM_BASE[ args_ptr + i ] != 0 ) && ( PS2MEM_BASE[ args_ptr + i] != 32 ) )
+CVE##########
+            i--;
+         }
+			if ( ( PS2MEM_BASE[ args_ptr + i ] != 0 ) && ( PS2MEM_BASE[ args_ptr + i ] != 32  ) )
+			{	//i==0
+				argc++;
+				if ( args_ptr - 4 - 4 - argc * 4 < 0 ) // fixme - Should this be cast to a signed int?
+				{
+CVE##########
+	{
+		int rsize = 0;
+		if ((strnicmp( filename.c_str(), "cdrom0:", strlen("cdromN:")) == 0) ||
+			(strnicmp( filename.c_str(), "cdrom1:", strlen("cdromN:")) == 0))
+		{
+CVE##########
+			int fi;
+			fi = CDVDFS_open(filename.c_str() + strlen("cdromN:"), 1);//RDONLY
+			if (fi < 0)
+				throw Exception::FileNotFound( filename );
+			CDVDFS_lseek( fi, 0, SEEK_SET );
+			rsize = CDVDFS_read( fi, (char*)data.GetPtr(), data.GetSizeInBytes() );
+			CDVDFS_close( fi );
+		}
+		else
+		{
+			FILE *f;
+CVE##########
+			f = fopen( filename.c_str(), "rb" );
+			if( f == NULL )
+				Exception::FileNotFound( filename );
+			fseek( f, 0, SEEK_SET );
+			rsize = fread( data.GetPtr(), 1, data.GetSizeInBytes(), f );
+			fclose( f );
+		}
+
+		if( rsize < data.GetSizeInBytes() )
+			throw Exception::EndOfStream( filename );
+	}
+CVE##########
+void IniFileLoader::EnumEntry( const string& var, int& value, const char* const* enumArray, const int defvalue )
+{
+	string retval;
+	Entry( var, retval, enumArray[defvalue] );
+
+	int i=0;
+	while( enumArray[i] != NULL && ( retval != enumArray[i] ) ) i++;
+
+	if( enumArray[i] == NULL )
+	{
+		Console::Notice( "Loadini Warning > Unrecognized value '%hs' on key '%hs'\n\tUsing the default setting of '%s'.",
+			params &retval, &var, enumArray[defvalue] );
+		value = defvalue;
+	}
+	else
+		value = i;
+}
+CVE##########
+IniFile::~IniFile() {}
+IniFile::IniFile() : m_filename(), m_section("Misc")
+{
+	GetConfigFilename( m_filename );
+}
+CVE##########
+void IniFile::SetCurrentSection( const string& newsection )
+{
+	m_section = newsection;
+}
+CVE##########
+void IniFile::DoConfig( PcsxConfig& Conf )
+{
+	SetCurrentSection( "Misc" );
+
+	Entry( "Patching", Conf.Patch, false );
+	Entry( "GameFixes", Conf.GameFixes);
+#ifdef PCSX2_DEVBUILD
+	Entry( "DevLogFlags", varLog );
+#endif
+CVE##########
