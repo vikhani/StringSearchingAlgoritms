@@ -2,10 +2,10 @@
 #include "SearchingAlgorithms.h"
 
 size_t BoyerMooreHorspool(const char* haystack,
-                        size_t haystack_length,
-                        const occtable_type& occTable,
-                        const char* needle,
-                        const size_t needle_length)
+                          size_t haystack_length,
+                          const occtable_type& occTable,
+                          const char* needle,
+                          const size_t needle_length)
 {
   if (needle_length > haystack_length) return haystack_length;
   if (needle_length == 1)
@@ -27,6 +27,7 @@ size_t BoyerMooreHorspool(const char* haystack,
       {
         return haystack_position;
       }
+
       if (occTable[occ_char] == (unsigned)-1)
         haystack_position += 1;
       else

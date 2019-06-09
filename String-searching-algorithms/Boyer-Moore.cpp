@@ -38,8 +38,11 @@ size_t BoyerMoore(const char* haystack,
                                                  needle_length, 
                                                  needle_length, 
                                                  0);
-    if (match_len == needle_length && needle == string_view { haystack }.substr(haystack_position, needle_length))
-      return haystack_position;
+
+    const unsigned char occ_chart = haystack[haystack_position + needle_length_minus_1];
+    const unsigned char last_needle_char = needle[needle_length_minus_1];
+
+    if (match_len == needle_length && occ_chart==last_needle_char && needle == string_view { haystack }.substr(haystack_position, needle_length)) return haystack_position;
 
     const size_t mismatch_position = needle_length_minus_1 - match_len;
 

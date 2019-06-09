@@ -11,60 +11,59 @@ int main()
 {
   setlocale(LC_ALL, "Russian");
 
-  cout << "Loading file\n";
+  cout << "Loading file with code\n";
 
-  string filename = "bible.txt";
-  ifstream infile(filename);
-  //string line;
-  string haystack = /*static_cast<std::stringstream const&>*/(std::stringstream() << infile.rdbuf()).str();
+  string filenameHay = "bible.txt";
+  ifstream infileHay(filenameHay);
+  string haystack = (std::stringstream() << infileHay.rdbuf()).str();
 
-  //std::experimental::filesystem::path p{ filename };
-  //p = std::experimental::filesystem::canonical(p);
-  //size_t i = std::experimental::filesystem::file_size(p);
-
-  //while (true) 
-  //{
-  //  if (!getline(infile, line)) break;
-  //  haystack += (line + '\n');
-  //}
-
-  infile.close();
+  infileHay.close();
   cout << "\nFile loaded\n";
 
-  vector<string> needles = { "void ThisIsATestForSearch()",
-                             "MoonKnighttt",
-                             "Phoenixxx",
-                             "Deserttt",
-                             "Renegateee",
-                             "if (IsErrorActive(1011) && !isOK)",
-                             "ApplyRuleG_1011_RawFunCall(*this, result, pSrcPtree);",
-                             "if (IsErrorActive(1023))",
-                             "ApplyRuleG_1023(*this, result);",
-                             "ApplyRuleG_1025(*this, result);",
-                             "if (IsErrorActive(1025))",
-                             "Unicornsss",
-                             "void ChangeLanguage(char *langgg)",
-                             "strcpy_s(Config.Lannnggg, lang);",
-                             "SaveConfiiigg",
-                             "void ThisIsATestForTheSearch()"};
+  haystack.erase(remove_if(haystack.begin(), haystack.end(),
+    [](const std::string::value_type& value) {return value == '\n' || value == '\r'; }), haystack.end());
+
+
+  cout << "Loading file with patterns\n";
+
+  string filenamePat = "patterns.txt";
+  ifstream infilePat(filenamePat);
+  string patterns = (std::stringstream() << infilePat.rdbuf()).str();
+
+  infilePat.close();
+  cout << "\nFile loaded\n";
+
+  vector<string> needles;
+  ReadingPatterns(patterns, needles);
+
+  //vector<string> needles = { "void ThisIsATestForSearch()",
+  //                           "MoonKnighttt",
+  //                           "Phoenixxx",
+  //                           "De\nserttt",
+  //                           "Renegateee",
+  //                           "if (IsErrorActive(1011) && !isOK)",
+  //                           "ApplyRuleG_1011_RawFunCall(*this, result, pSrcPtree);",
+  //                           "if (IsErrorActive(1023))",
+  //                           "ApplyRuleG_1023(*this, result);",
+  //                           "ApplyRuleG_1025(*this, result);",
+  //                           "if (IsErrorActive(1025))",
+  //                           "Unicornsss",
+  //                           "void ChangeLanguage(char *langgg)",
+  //                           "strcpy_s(Config.Lannnggg, lang);",
+  //                           "SaveConfiiigg",
+  //                           "void ThisIsATestForTheSearch()"};
   SortingStrings(needles);
-  //vector<string> needlesForAhoCor = { "aklaffs akfab)",
-  //                                    "bklaffsakfba",
-  //                                    "cklaffsakfdccc",
-  //                                    "aklaffsakfaabcd",
-  //                                    "aklaffsakfaabcbca",
-  //                                    "aklaffsakfabcda",
-  //                                    "aklaffsakfaanabaf",
-  //                                    "aklaffsakfababscv",
-  //                                    "aklaffsakfabsdaaa",
-  //                                    "vklaffsakfvcababaa",
-  //                                    "aklaffsakfsdasdaaa",
-  //                                    "aklaffsakfsadasdasdaaa" };
+
+  for (auto &needle : needles)
+  {
+    needle.erase(remove_if(needle.begin(), needle.end(),
+      [](const std::string::value_type& value) {return value == '\n' || value == '\r'; }), needle.end());
+  }
+
+
+
 
   clock_t start, end; // часы
-
-
-
 
   size_t haystack_len = haystack.length();
   vector<size_t> needles_length;
@@ -80,7 +79,7 @@ int main()
 
   for (size_t i = 0; i < needles.size(); ++i)
   {
-    p_func.push_back(PrefFunction(needles[i].data(), needles_length[i])); // префикс-функция
+    p_func.push_back(PrefFunction(needles[i]+(string)"#"+(string)haystack, needles_length[i])); // префикс-функция
     occ.push_back(OccTable(needles[i].data(), needles_length[i])); // таблица стоп-символов
     skip.push_back(SkipTable(needles[i].data(), needles_length[i])); // таблица суффиксов
   }
@@ -95,14 +94,14 @@ int main()
   {
     for (size_t j = 0; j < needles_length[i]; j++)
     {
-      needle_hash[i] = needle_hash[i] + (needles[i][j]) * FastPower(PRIME, (needles_length[i] - j - 1));
+      needle_hash[i] = needle_hash[i] + (needles[i][j]) * FastPower(BASE, (needles_length[i] - j - 1));
     }
   }
 
   const size_t cycles_max = CYCLES_NUMBER; // количесвто циклов прогонки "тестового" поиска
 
-  vector<size_t> //result_placeNaive,
-               //result_placeRK,
+  vector<size_t> result_placeNaive,
+                 result_placeRK,
                  result_placeBM,
                  result_placeBMH,
                  result_placeBMHR,
@@ -110,12 +109,36 @@ int main()
                  result_placeCPP,
                  result_placeRKR,
                  result_placeAhoCor;
-  //result_placeNaive.reserve(cycles_max);
+  result_placeNaive.reserve(needles.size()*2);
+  result_placeRK.reserve(needles.size() * 2);
+  result_placeBM.reserve(needles.size() * 2);
+  result_placeBMH.reserve(needles.size() * 2);
+  result_placeBMHR.reserve(needles.size() * 2);
+  result_placeKMP.reserve(needles.size() * 2);
+  result_placeCPP.reserve(needles.size() * 2);
+  result_placeRKR.reserve(needles.size() * 2);
+  result_placeAhoCor.reserve(needles.size() * 2);
+
+  vector<bohrVertex> bohr;
+
+  BohrIni(bohr);
+
+  for (int i = 0; i < needles.size(); i++)
+  {
+    AddingStringToBohr(needles[i], bohr);
+  }
+
+  vector<size_t> needleNums;
+  needleNums.reserve(needles.size() * 2);
 
   start = clock();
-    result_placeAhoCor = CheckAhoCorWork(needles, haystack);
+  for (int i = 0; i < cycles_max; ++i)
+  {
+    needleNums.erase(needleNums.begin(), needleNums.end());
+    result_placeAhoCor = FindAllPositions(haystack, bohr, needleNums);
+  }
   end = clock();
-  long double secondsAhoCor = (long double)(end - start) / CLOCKS_PER_SEC;
+  long double secondsAhoCor = (long double)(end - start) / CLOCKS_PER_SEC / cycles_max;
   cout << "AhoCor done\n";
 
   cout << "Среднее время работы: " << secondsAhoCor << '\n';
@@ -146,37 +169,52 @@ int main()
     cout << result_placeCPP[i] << '\n';
   }
   cout << "Среднее время работы: " << secondsCPP << "\n\n";
-  //start = clock();
-  //for (size_t i = 0; i < cycles_max; i++)
-  //{
-  //  for (size_t j = 0; j < needles.size(); j++)
-  //    result_placeNaive.push_back(NaiveSearch(haystack.data(), haystack_len, needles[j].data(), needles_length[j]));
-  //  cout << "Naive /";
-  //}
-  //end = clock();
-  //long double secondsNaive = (long double)(end - start) / CLOCKS_PER_SEC / cycles_max;
-  //cout << "Naive done\n";
-
-  //start = clock();
-  //for (size_t i = 0; i < cycles_max; i++)
-  //{
-  //  result_placeRK = RabinKarpwithBernstein(haystack.data(), n, needle.data(), m);
-  //  cout << "RK /";
-  //}
-  //end = clock();
-  //long double secondsRK = (long double)(end - start) / CLOCKS_PER_SEC / cycles_max;
-  //cout << "RK done\n";
 
   start = clock();
-  for (string_view needle : needles)
+  for (size_t i = 0; i < cycles_max; i++)
   {
-    std::search(haystack.begin(), haystack.end(), boyer_moore_horspool_searcher(needle.begin(), needle.end()));
+    for (size_t j = 0; j < needles.size(); j++)
+      result_placeNaive.push_back(NaiveSearch(haystack.data(), haystack_len, needles[j].data(), needles_length[j]));
+    cout << "Naive /";
+  }
+  end = clock();
+  long double secondsNaive = (long double)(end - start) / CLOCKS_PER_SEC / cycles_max;
+  cout << "Naive done\n";
+
+  start = clock();
+  for (size_t i = 0; i < cycles_max; i++)
+  {
+    result_placeRK = RabinKarpwithBernstein(haystack, haystack_len, needles, needles_length);
+    cout << "RK /";
+  }
+  end = clock();
+  long double secondsRK = (long double)(end - start) / CLOCKS_PER_SEC / cycles_max;
+  cout << "RK done\n";
+
+  start = clock();
+  for (int i = 0; i < cycles_max; ++i)
+  {
+    for (string_view needle : needles)
+    {
+      std::search(haystack.begin(), haystack.end(), boyer_moore_horspool_searcher(needle.begin(), needle.end()));
+    }
   }
   end = clock();
 
   long double secondsCPP17 = (long double)(end - start) / CLOCKS_PER_SEC / cycles_max;
-  cout << "CPP17: " << secondsCPP17;
+  cout << "CPP17:" << secondsCPP17<< '\n';
   start = clock();
+
+  start = clock();
+  for (size_t i = 0; i < cycles_max; i++)
+  {
+      result_placeKMP = KnuthMorrisPratt(haystack, haystack_len, p_func, needles, needles_length);
+    cout << "KMP /";
+  }
+  end = clock();
+  long double secondsKMP = (long double)(end - start) / CLOCKS_PER_SEC / cycles_max;
+  cout << secondsKMP<<"\nKMP done\n";
+
 
   for (size_t i = 0; i < cycles_max; i++)
   {
@@ -224,53 +262,44 @@ int main()
   cout << "BMHR done\n";
 
 
-  start = clock();
-  for (size_t i = 0; i < cycles_max; i++)
+
+
+  cout << "Результат наивного алгоритма:\n";
+  for (size_t i = 0; i < needles.size(); ++i)
   {
-    for (size_t j = 0; j < needles.size(); j++)
-      result_placeKMP.push_back(KnuthMorrisPratt(haystack.data(), haystack_len, p_func[j], needles[j].data(), needles_length[j]));
-    cout << "KNP /";
-
+    cout  << result_placeNaive[i]  << '\n';
   }
-  end = clock();
-  long double secondsKMP = (long double)(end - start) / CLOCKS_PER_SEC / cycles_max;
-  cout << "KNP done\n";
+  cout << "Среднее время работы: " << secondsNaive << "\n\n";
 
-
-
-  //cout << "Результат наивного алгоритма:\n";
-  //for (size_t i = 0; i < needles.size(); ++i)
-  //{
-  //  cout  << result_placeNaive[i]  << '\n';
-  //}
-  //cout << "Среднее время работы: " << secondsNaive << "\n\n";
-
-
-
-  cout << "Результат алгоритма Бойера-Мура:                               " << result_placeBM[0]     << ". Среднее время работы: "  << secondsBM << '\n';
- // cout << "Результат алгоритма Рабина-Карпа:                              " << result_placeRK      << ". Среднее время работы: " << secondsRK << '\n';
-  cout << "Результат алгоритма Рабина-Карпа c rolling хэшем:              " << result_placeRKR[0]    << ". Среднее время работы: " << secondsRKR << '\n';
-  cout << "Результат алгоритма Ахо-Корасик:                               " << result_placeAhoCor[0] << ". Среднее время работы: " << secondsAhoCor << '\n';
+  for (int i = 0; i < result_placeKMP.size(); ++i)
+  {
+    cout << result_placeCPP[i] <<"    "<<result_placeKMP[i]<<"    "<<result_placeAhoCor[i] << "    " << result_placeRKR[i] << '\n';
+  }
+  cout << "Результат наивного алгоритма:                                  " << result_placeNaive[0] << ". Среднее время работы: " << secondsNaive << '\n';
+  cout << "Результат алгоритма Кнута-Морриса-Пратта:                      " << result_placeKMP[0] << ". Среднее время работы: " << secondsKMP << '\n';
+  cout << "Результат алгоритма Бойера-Мура:                               " << result_placeBM[0] << ". Среднее время работы: " << secondsBM << '\n';
   cout << "Результат алгоритма Бойера-Мура-Хорспула:                      " << result_placeBMH[0]    << ". Среднее время работы: " << secondsBMH << '\n';
   cout << "Результат алгоритма Бойера-Мура-Хорспула c оптимизацией Раита: " << result_placeBMHR[0]   << ". Среднее время работы: " << secondsBMHR << '\n';
-  cout << "Результат алгоритма Кнута-Морриса-Пратта:                      " << result_placeKMP[0]    << ". Среднее время работы: " << secondsKMP << '\n';
+  cout << "Результат алгоритма Рабина-Карпа:                              " << result_placeRK[0]      << ". Среднее время работы: " << secondsRKR << '\n';
+  cout << "Результат алгоритма Рабина-Карпа c rolling хэшем:              " << result_placeRKR[0]    << ". Среднее время работы: " << secondsRK << '\n';
+  cout << "Результат алгоритма Ахо-Корасик:                               " << result_placeAhoCor[0] << ". Среднее время работы: " << secondsAhoCor << '\n';
 
-  cout << "Искомые строки: \n";
-  for (size_t i = 0; i < needles.size(); i++)
-  {
-      cout << needles[i] << '\n';
-  }
-  cout << "\n\n";
-  cout << "Найденные строки: \n";
-  for (size_t i = 0; i < needles.size(); i++)
-  {
-    cout << "\n";
-    for (size_t j = 0; j < needles_length[i]; j++)
-    {
-      cout << haystack[result_placeRKR[i] + j];
-    }
-  }
-  cout << "\n";
+  //cout << "Искомые строки: \n";
+  //for (size_t i = 0; i < needles.size(); i++)
+  //{
+  //    cout << needles[i] << '\n';
+  //}
+  //cout << "\n\n";
+  //cout << "Найденные строки: \n";
+  //for (size_t i = 0; i < result_placeAhoCor.size(); i++)
+  //{
+  //  cout << "\n";
+  //  for (size_t j = 0; j < needles[needleNums[i]].size(); j++)
+  //  {
+  //    cout << haystack[result_placeAhoCor[i] + j];
+  //  }
+  //}
+  //cout << "\n";
 
   return 0;
 }

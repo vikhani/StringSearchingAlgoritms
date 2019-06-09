@@ -1,29 +1,34 @@
 #include "pch.h"
 #include "SearchingAlgorithms.h"
 
-size_t KnuthMorrisPratt(const char* haystack,
-                        const size_t haystack_length,
-                        const prefix_function& pref_function,
-                        const char* needle,
-                        const size_t needle_length)
+vector<size_t> KnuthMorrisPratt(string &haystack,
+  const size_t haystack_length,
+  const vector<prefix_function> &pref_function,
+  const vector<string> &needles,
+  const vector<size_t> needle_length)
 {
-  if (needle_length > haystack_length) return haystack_length;
-  if (needle_length == 1)
+  vector<size_t> result;
+  result.reserve(needles.size() * 2);
+  for (int j = 0; j< needles.size();++j)
   {
-    const unsigned char* result = (const unsigned char*)std::memchr(haystack, *needle, haystack_length);
-    return result ? size_t(result - (unsigned)haystack) : haystack_length;
+    // if (needle_length > haystack_length) return string::npos;
+    for (size_t k = 0, i = 0; i < (unsigned)haystack_length; ++i)
+    {
+      while ((k > 0) && (needles[j][k] != haystack[i]))
+      {
+        k = pref_function[j][k - 1];
+      }
+
+      if (needles[j][k] == haystack[i])
+      {
+        k++;
+      }
+
+      if (k == needle_length[j])
+      {
+        result.push_back(i - needle_length[j] + 1);
+      }
+    }
   }
-
-  for (size_t k = 0, i = 0; i < (unsigned)haystack_length; ++i)
-  {
-    while ((k > 0) && (needle[k] != haystack[i]))
-      k = pref_function[k - 1];
-
-    if (needle[k] == haystack[i])
-      k++;
-
-    if (k == needle_length)
-      return (i - needle_length + 1); 
-  }
-  return (string::npos);
+  return result;
 }

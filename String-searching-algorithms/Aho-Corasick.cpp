@@ -6,7 +6,7 @@
 
 using namespace std;
 
-vector<bohrVertex> bohr;
+//vector<bohrVertex> bohr;
 vector<string> needlesInBohr;
 
 bohrVertex CreatingBohrVertex(int parentName, char curSymbol)
@@ -24,12 +24,12 @@ bohrVertex CreatingBohrVertex(int parentName, char curSymbol)
   return vertex;
 }
 
-void BohrIni() 
+void BohrIni(vector<bohrVertex> &bohr)
 {
   bohr.push_back(CreatingBohrVertex(0, '$'));
 }
 
-void AddingStringToBohr(const string& needle)
+void AddingStringToBohr(const string &needle, vector<bohrVertex> &bohr)
 {
   int num = 0;
   for (int i = 0; i < needle.length(); i++)
@@ -49,12 +49,12 @@ void AddingStringToBohr(const string& needle)
   bohr[num].needleNumber = needlesInBohr.size() - 1;
 }
 
-bool IsStringAddedToBohr(const string& needle)
+bool IsStringAddedToBohr(const string &needle, vector<bohrVertex> &bohr)
 {
   int num = 0;
-  for (int i = 0; i < needle.length(); i++)
+  for (char ch : needle/*int i = 0; i < needle.length(); i++*/)
   {
-    char ch = needle[i];
+    //char ch = needle[i];
     if (bohr[num].nextVertex[ch] == -1)
     {
       return false;
@@ -66,9 +66,9 @@ bool IsStringAddedToBohr(const string& needle)
   return true;
 }
 
-int GetAutoMoving(int vertexIndex, char ch);
+int GetAutoMoving(int vertexIndex, char ch, vector<bohrVertex> &bohr);
 
-int GettingSuffLink(int vertexIndex)
+int GettingSuffLink(int vertexIndex, vector<bohrVertex> &bohr)
 {
   if (bohr[vertexIndex].suffLink == -1)
   {
@@ -78,14 +78,16 @@ int GettingSuffLink(int vertexIndex)
     }
     else
     {
-      bohr[vertexIndex].suffLink = GetAutoMoving(GettingSuffLink(bohr[vertexIndex].parent), bohr[vertexIndex].symb);
+      bohr[vertexIndex].suffLink = GetAutoMoving(GettingSuffLink(bohr[vertexIndex].parent, bohr),
+                                                 bohr[vertexIndex].symb,
+                                                 bohr);
     }
   }
 
   return bohr[vertexIndex].suffLink;
 }
 
-int GetAutoMoving(int vertexIndex, char ch)
+int GetAutoMoving(int vertexIndex, char ch, vector<bohrVertex> &bohr)
 {
   if (bohr[vertexIndex].auto_move[ch] == -1)
   {
@@ -95,79 +97,47 @@ int GetAutoMoving(int vertexIndex, char ch)
     }
     else
     {
-      bohr[vertexIndex].auto_move[ch] = vertexIndex == 0 ? 0 : GetAutoMoving(GettingSuffLink(vertexIndex), ch);
-      //if (vertexIndex == 0)
-      //{
-      //  bohr[vertexIndex].auto_move[ch] = 0;
-      //}
-      //else
-      //{
-      //  bohr[vertexIndex].auto_move[ch] = GetAutoMoving(GettingSuffLink(vertexIndex), ch);
-      //}
+      bohr[vertexIndex].auto_move[ch] = vertexIndex == 0 ? 0 : GetAutoMoving(GettingSuffLink(vertexIndex, bohr), ch, bohr);
     }
   }
   return bohr[vertexIndex].auto_move[ch];
 }
 
-int GettingGoodSuffLink(int vertex)
+int GettingGoodSuffLink(int vertex, vector<bohrVertex> &bohr)
 {
   if (bohr[vertex].suffGoodLink == -1)
   {
-    int u = GettingSuffLink(vertex);
+    int u = GettingSuffLink(vertex, bohr);
     if (u == 0)
     {
       bohr[vertex].suffGoodLink = 0;
     }
     else
     {
-      bohr[vertex].suffGoodLink = (bohr[u].flag) ? u : GettingGoodSuffLink(u);
+      bohr[vertex].suffGoodLink = (bohr[u].flag) ? u : GettingGoodSuffLink(u, bohr);
     }
   }
+
   return bohr[vertex].suffGoodLink;
 }
 
-//void Check(int vertex, int positionEnd, vector<size_t> &result)
-//{
-//  for (int u = vertex; u != 0; u = GettingGoodSuffLink(u))
-//  {
-//    if (bohr[u].flag)
-//    {
-//      //cout << i - needle[bohr[u].needleSize].length() << " " << needle[bohr[u].needleSize] << endl;
-//      result.push_back( positionEnd - needlesInBohr[bohr[u].needleNumber].length() );
-//    }
-//  }
-//}
-
-void FindAllPositions(const string& haystack, vector<size_t> &result)
+vector<size_t> FindAllPositions(const string& haystack, vector<bohrVertex> &bohr, vector<size_t> &needleNums)
 {
+  vector<size_t> result;
+  result.reserve(needleNums.size() * 2);
   size_t vertex = 0;
   for (size_t i = 0; i < haystack.length(); i++)
   {
-    vertex = GetAutoMoving(vertex, haystack[i]);
-    //Check(vertex, i + 1, result);
-    for (size_t u = vertex; u != 0; u = GettingGoodSuffLink(u))
+    vertex = GetAutoMoving(vertex, haystack[i], bohr);
+    for (size_t u = vertex; u != 0; u = GettingGoodSuffLink(u, bohr))
     {
       if (bohr[u].flag)
       {
        // cout << i - needle[bohr[u].needleSize].length() << " " << needle[bohr[u].needleSize] << endl;
         result.push_back(i + 1 - needlesInBohr[bohr[u].needleNumber].length());
+        needleNums.push_back(bohr[u].needleNumber);
       }
     }
   }
-}
-
-vector<size_t> CheckAhoCorWork(const vector<string> &needles, const string &haystack)
-{
-  vector<size_t> result;
-  BohrIni();
-
-  for (int i = 0; i < needles.size(); i++)
-  {
-    AddingStringToBohr(needles[i]);
-  }
-
-  FindAllPositions(haystack, result);
-
   return result;
 }
-
