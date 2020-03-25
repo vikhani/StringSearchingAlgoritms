@@ -10,8 +10,11 @@ void Foo()
 	{
 	  char *buff;
 	  buff = malloc(strlen(home) + strlen("/.local/share/")+1);
-	  strcpy(buff, home);
-	  strcat(buff, "/.local/share/");
-	  free(buff);
+	    if(buff!=NULL)
+	    {
+	      strcpy(buff, home);
+	      strcat(buff, "/.local/share/");
+	      free(buff);
+	    }
 	}
 }
