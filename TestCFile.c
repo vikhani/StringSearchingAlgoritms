@@ -8,13 +8,13 @@ void Foo()
 	home = getenv("HOME");
 	if (home != NULL)
 	{
-	  char *buff;
-	  buff = malloc(strlen(home) + strlen("/.local/share/")+1);
-	    if(buff!=NULL)
+	  char *guessed_xdg_home;
+	  guessed_xdg_home = malloc(strlen(home) + strlen("/.local/share/")+1);
+	    if(guessed_xdg_home!=NULL)
 	    {
-	      strcpy(buff, home);
-	      strcat(buff, "/.local/share/");
-	      free(buff);
+	      strcpy(guessed_xdg_home, home);
+	      strcat(guessed_xdg_home, "/.local/share/");
+	      free(guessed_xdg_home);
 	    }
 	}
 }
