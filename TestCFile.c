@@ -9,7 +9,7 @@ void Foo()
 	if (home != NULL)
 	{
 	  char *buff;
-	  buff = malloc(strlen(home) + strlen("/.local/")+1);
+	  buff = malloc(strlen(home) + strlen("/.local/share/")+1);
 	  strcpy(buff, home);
 	  strcat(buff, "/.local/share/");
 	  free(buff);
